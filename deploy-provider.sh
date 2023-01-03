@@ -1,12 +1,12 @@
 #!/bin/env bash
 
 # build demoservice docker image & load to kind
-pushd demoServiceProvider
+cd demoServiceProvider
 docker build -t demoserviceprovider .
 kind load docker-image demoserviceprovider --name=jaeger-demo
-popd
+cd ..
 
 # deploy demoservice in kind, perform port-forward
-pushd helm/demoserviceprovider
+cd helm/demoserviceprovider
 helm upgrade provider . -n demo --create-namespace --install
-popd
+cd ../..

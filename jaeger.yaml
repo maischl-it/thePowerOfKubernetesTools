@@ -4,12 +4,3 @@ metadata:
   name: simplest
 spec:
   strategy: allInOne
-  allInOne:
-    options:
-      query:
-        base-path: "/jaeger"
-  ingress:
-    enabled: true
-    pathType: Prefix
-    hosts:
-      - localhost
