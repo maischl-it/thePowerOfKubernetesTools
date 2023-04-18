@@ -54,3 +54,16 @@ Run
 '''
 python3 app.py
 '''
+
+# ArgoCD
+
+Port-Forward
+'''
+kubectl port-forward svc/argocd-server -n argocd 8080:443
+'''
+
+User:
+admin
+
+Passwort:
+tWvC1YWJnBMIWmJm
