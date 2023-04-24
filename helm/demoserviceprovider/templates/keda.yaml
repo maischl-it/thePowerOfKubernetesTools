@@ -1,0 +1,34 @@
+{{- if .Values.keda.enabled -}}
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: {{ include "demoserviceprovider.fullname" . }}
+  labels:
+    {{- include "demoserviceprovider.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    name: {{ include "demoserviceprovider.fullname" . }}
+  minReplicaCount: 1
+  maxReplicaCount: 12
+  advanced:
+    horizontalPodAutoscalerConfig:
+      behavior:
+        scaleUp:
+          stabilizationWindowSeconds: 10
+          policies:
+          - type: Percent
+            value: 100
+            periodSeconds: 15
+        scaleDown:
+          stabilizationWindowSeconds: 10
+          policies:
+          - type: Percent
+            value: 100
+            periodSeconds: 15
+  triggers:
+  - type: metrics-api
+    metadata:
+      targetValue: "2"
+      url: "http://consumer-demoserviceconsumer.demo.svc.cluster.local:5000/metrics"
+      valueLocation: 'value'
+{{- end -}}

@@ -14,3 +14,11 @@ kubectl wait pod -n observability -l app.kubernetes.io/instance=jaeger --for con
 
 # Deploy Jaeger all in one
 kubectl apply -f jaeger.yaml
+
+# Deploy KEDA
+helm repo add kedacore https://kedacore.github.io/charts --force-update
+helm install keda kedacore/keda --namespace keda --version 2.10.2 --create-namespace
+
+# Deploy redis
+helm repo add bitnami https://charts.bitnami.com/bitnami --force-update
+helm install redis bitnami/redis --namespace demo --create-namespace --set architecture=standalone --set global.redis.password=testadmin
