@@ -12,6 +12,11 @@ helm repo add jaegertracing https://jaegertracing.github.io/helm-charts --force-
 helm install jaeger jaegertracing/jaeger-operator --set rbac.clusterRole=true -n observability --create-namespace
 kubectl wait pod -n observability -l app.kubernetes.io/instance=jaeger --for condition=Ready --timeout=60s
 
+# Install Metrics-Server (Linkerd)
+helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
+helm repo update
+helm upgrade --install --set args={--kubelet-insecure-tls} metrics-server metrics-server/metrics-server --namespace kube-system
+
 # Deploy Jaeger all in one
 kubectl apply -f jaeger.yaml
 
@@ -22,3 +27,18 @@ helm install keda kedacore/keda --namespace keda --version 2.10.2 --create-names
 # Deploy redis
 helm repo add bitnami https://charts.bitnami.com/bitnami --force-update
 helm install redis bitnami/redis --namespace demo --create-namespace --set architecture=standalone --set global.redis.password=testadmin
+
+# ArgoCD
+kubectl create namespace argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+# Linkerd
+
+linkerd install --crds | kubectl apply -f -
+linkerd install | kubectl apply -f -
+linkerd check
+
+# Telepresence
+
+telepresence helm install
+telepresence connect
