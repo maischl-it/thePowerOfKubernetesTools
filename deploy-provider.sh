@@ -7,6 +7,6 @@ kind load docker-image demoserviceprovider --name=jaeger-demo
 cd ..
 
 # deploy demoservice in kind, perform port-forward
-cd helm/demoserviceprovider
-helm upgrade provider . -n demo --create-namespace --install
-cd ../..
+# cd helm/demoserviceprovider
+# helm upgrade provider . -n demo --create-namespace --install
+# cd ../..
