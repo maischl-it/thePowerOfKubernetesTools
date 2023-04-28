@@ -1,7 +1,7 @@
 [submodule "demoServiceConsumer"]
 	path = demoServiceConsumer
-	url = http://192.168.160.39:3001/sem/demoServiceConsumer.git
+	url = https://github.com/maischl-it/demoServiceConsumer.git
 
 [submodule "demoServiceProvider"]
 	path = demoServiceProvider
-	url = http://192.168.160.39:3001/sem/demoServiceProvider.git
+	url = https://github.com/maischl-it/demoServiceProvider.git
