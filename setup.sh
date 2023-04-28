@@ -36,6 +36,7 @@ kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/st
 
 linkerd install --crds | kubectl apply -f -
 linkerd install | kubectl apply -f -
+linkerd viz install | kubectl apply -f - # install the on-cluster metrics stack
 linkerd check
 
 # Telepresence
