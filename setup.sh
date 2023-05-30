@@ -1,6 +1,6 @@
 #!/bin/env sh
 
-kind create cluster --name jaeger-demo
+kind create cluster --name tech-demo
 
 # Install cert-manager (Prerequisite of jaeger)
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.10.1/cert-manager.crds.yaml
@@ -37,6 +37,20 @@ kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/st
 linkerd install --crds | kubectl apply -f -
 linkerd install | kubectl apply -f -
 linkerd check
+
+# Deploy Provider
+
+cd demoServiceProvider
+docker build -t demoserviceprovider .
+kind load docker-image demoserviceprovider --name=tech-demo
+cd ..
+
+# Deploy Consumer
+
+cd demoServiceConsumer
+docker build -t demoserviceconsumer .
+kind load docker-image demoserviceconsumer --name=tech-demo
+cd ..
 
 # Telepresence
 

@@ -1,3 +1,3 @@
 #!/bin/env sh
 
-kind delete cluster --name jaeger-demo
+kind delete cluster --name tech-demo
