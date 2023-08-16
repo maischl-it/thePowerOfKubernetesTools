@@ -1,10 +1,10 @@
 #!/bin/env bash
 
 # build demoservice docker image & load to kind
-cd demoServiceConsumer
-docker build -t demoserviceconsumer .
-kind load docker-image demoserviceconsumer --name=jaeger-demo
-cd ..
+# cd demoServiceConsumer
+# docker build -t demoserviceconsumer .
+# kind load docker-image demoserviceconsumer --name=tech-demo
+# cd ..
 
 # deploy demoservice in kind, perform port-forward
 # cd helm/demoserviceconsumer

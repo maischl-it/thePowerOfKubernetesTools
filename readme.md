@@ -79,3 +79,5 @@ Dashboard
 ```
 linkerd viz dashboard &
 ```
+Passwort:
+-ppVSgtoBKG-sgc-
