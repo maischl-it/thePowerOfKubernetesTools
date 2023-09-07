@@ -39,6 +39,12 @@ linkerd install | kubectl apply -f -
 linkerd viz install | kubectl apply -f - # install the on-cluster metrics stack
 linkerd check
 
+# Kubecost
+
+helm upgrade --install kubecost \
+  --repo https://kubecost.github.io/cost-analyzer/ cost-analyzer \
+  --namespace kubecost --create-namespace
+
 # Deploy Provider
 
 cd demoServiceProvider

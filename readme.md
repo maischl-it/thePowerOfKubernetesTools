@@ -81,3 +81,34 @@ linkerd viz dashboard &
 ```
 Passwort:
 -ppVSgtoBKG-sgc-
+
+# Kubeshark
+
+Start network monitoring
+
+```
+kubeshark tap -n fairadvisor-qa "fairadvisor-fao*" 
+```
+
+Remove all deployed resources
+
+```
+kubeshark clean
+```
+
+# Kubecost
+
+UI
+
+```
+kubectl port-forward --namespace kubecost deployment/kubecost-cost-analyzer 9090
+```
+
+# Kubescape
+
+Scan
+
+```
+kubescape scan --enable-host-scan --verbose  --format html --output results.html
+```
+
