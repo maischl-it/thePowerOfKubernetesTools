@@ -87,7 +87,7 @@ Passwort:
 Start network monitoring
 
 ```
-kubeshark tap -n fairadvisor-qa "fairadvisor-fao*" 
+kubeshark tap 
 ```
 
 Remove all deployed resources
