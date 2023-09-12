@@ -45,6 +45,11 @@ helm upgrade --install kubecost \
   --repo https://kubecost.github.io/cost-analyzer/ cost-analyzer \
   --namespace kubecost --create-namespace
 
+# FluentBit
+cd helm/fluenbit
+helm upgrade --install fluentbit -n fluentbit --create-namespace .
+cd ../..
+
 # Deploy Provider
 
 cd demoServiceProvider

@@ -87,7 +87,7 @@ Passwort:
 Start network monitoring
 
 ```
-kubeshark tap -n fairadvisor-qa "fairadvisor-fao*" 
+kubeshark tap -n fairgleichen-qa "fairgleichen*" 
 ```
 
 Remove all deployed resources
@@ -112,3 +112,10 @@ Scan
 kubescape scan --enable-host-scan --verbose  --format html --output results.html
 ```
 
+# FluentBit
+
+Read logs
+
+```
+k logs pod/fluentbit-fluent-bit-fcw8v -n fluentbit --tail=5
+```

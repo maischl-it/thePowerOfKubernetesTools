@@ -1,0 +1,35 @@
+fluent-bit:
+  config:
+    inputs: |
+      [INPUT]
+          Name tail
+          Path /var/log/containers/fairgleichen*.log
+          multiline.parser docker, cri
+          Tag kube.*
+          Mem_Buf_Limit 5MB
+          Skip_Long_Lines On
+
+      [INPUT]
+          Name systemd
+          Tag host.*
+          Systemd_Filter _SYSTEMD_UNIT=kubelet.service
+          Read_From_Tail On
+
+      # [INPUT]
+          # Name cpu
+          # Tag  cpus
+    outputs: |
+      # [OUTPUT]
+      #     Name  es
+      #     Match *
+      #     Host  elastic.example.de
+      #     Port  443
+      #     tls    On
+      #     Logstash_Format On
+      #     Suppress_Type_Name On
+      #     HTTP_User user1234
+      #     HTTP_Passwd secret1234
+      [OUTPUT]
+          Name stdout
+          Match   *
+          Format json
