@@ -119,3 +119,37 @@ Read logs
 ```
 k logs pod/fluentbit-fluent-bit-fcw8v -n fluentbit --tail=5
 ```
+
+# eBPF
+
+## Hubble
+
+Hubble UI aufrufen
+
+```
+cilium hubble ui
+```
+
+## Tetragon
+
+### Events
+
+#### Listening
+
+```
+kubectl exec -ti -n kube-system pod/ttetragon-247jq -c tetragon -- tetra getevents -o compact --pods xwing
+```
+
+#### Test
+
+```
+kubectl exec -ti pod/xwing -- bash -c 'curl web.de'
+```
+
+### Metrics
+
+Port-Forward vom Metrics-Server
+
+```
+kubectl -n kube-system port-forward service/tetragon 2112:2112
+```
