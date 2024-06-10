@@ -1,12 +1,8 @@
 # Install
 
 ```
+sh setupAKS.sh
 sh setup.sh
-```
-
-```
-sh deploy-consumer.sh
-sh deploy-provider.sh
 ```
 
 # Jaeger-UI
@@ -21,12 +17,11 @@ k port-forward svc/simplest-query 16686
 k port-forward -n demo svc/consumer-demoserviceconsumer 5000
 ```
 
-# Telepresence
+## Metrics
 
-Install Traffic-Manager
-```
-telepresence helm install 
-```
+http://localhost:5000/metrics
+
+# Telepresence
 
 Connect to Cluster
 ```
@@ -55,6 +50,20 @@ Run
 python3 app.py
 ```
 
+# Keda
+
+Metrics
+
+```
+k get secret/argocd-initial-admin-secret -n argocd -o yaml | code -
+```
+
+ScaledObject abrufen
+
+```
+k get scaledobject -n demo -o yaml | code -
+```
+
 # ArgoCD
 
 Extract Secret
@@ -71,7 +80,7 @@ User:
 admin
 
 Passwort (generated):
-7J0YDOpofPZxpmKL
+ybIs9JR-175MvcgC
 
 # Linkerd
 
@@ -87,7 +96,7 @@ Passwort:
 Start network monitoring
 
 ```
-kubeshark tap -n fairgleichen-qa "fairgleichen*" 
+kubeshark tap -n demo
 ```
 
 Remove all deployed resources
@@ -130,6 +139,20 @@ Hubble UI aufrufen
 cilium hubble ui
 ```
 
+### Example API-Calls
+
+XWing
+
+```
+kubectl exec xwing -- curl -s -XPOST deathstar.default.svc.cluster.local/v1/request-landing
+```
+
+Tiefighter
+
+```
+kubectl exec tiefighter -- curl -s -XPOST deathstar.default.svc.cluster.local/v1/request-landing
+```
+
 ## Tetragon
 
 ### Events
@@ -137,13 +160,21 @@ cilium hubble ui
 #### Listening
 
 ```
-kubectl exec -ti -n kube-system pod/ttetragon-247jq -c tetragon -- tetra getevents -o compact --pods xwing
+kubectl exec -ti -n kube-system pod/tetragon-z5hhk -c tetragon -- tetra getevents -o compact --pods xwin
 ```
 
 #### Test
 
+Curl
+
 ```
 kubectl exec -ti pod/xwing -- bash -c 'curl web.de'
+```
+
+FileAccess
+
+```
+kubectl exec -ti pod/xwing -- bash -c 'cat /etc/shadow && echo foo >> /etc/bar'
 ```
 
 ### Metrics
@@ -153,3 +184,7 @@ Port-Forward vom Metrics-Server
 ```
 kubectl -n kube-system port-forward service/tetragon 2112:2112
 ```
+
+Metrics-URL
+
+http://localhost:2112/metrics

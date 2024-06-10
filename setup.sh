@@ -1,32 +1,35 @@
-#!/bin/env sh
+# eBPF
 
-kind create cluster --name tech-demo
+# Cilium
 
-# Install cert-manager (Prerequisite of jaeger)
-kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.10.1/cert-manager.crds.yaml
-helm repo add jetstack https://charts.jetstack.io --force-update
-helm install cert-manager jetstack/cert-manager -n cert-manager --create-namespace --version v1.10.1
+cilium install --set azure.resourceGroup="sem"
+cilium status --wait
 
-# Install jaeger-operator & wait for pod to become ready
-helm repo add jaegertracing https://jaegertracing.github.io/helm-charts --force-update
-helm install jaeger jaegertracing/jaeger-operator --set rbac.clusterRole=true -n observability --create-namespace
-kubectl wait pod -n observability -l app.kubernetes.io/instance=jaeger --for condition=Ready --timeout=60s
+# Example Application eBPF
 
-# Install Metrics-Server (Linkerd)
-helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
+kubectl create -f https://raw.githubusercontent.com/cilium/cilium/v1.15.3/examples/minikube/http-sw-app.yaml
+
+# Hubble
+
+cilium hubble enable --ui
+
+# Tetragon
+
+helm repo add cilium https://helm.cilium.io
 helm repo update
-helm upgrade --install --set args={--kubelet-insecure-tls} metrics-server metrics-server/metrics-server --namespace kube-system
+helm install tetragon cilium/tetragon -n kube-system
 
-# Deploy Jaeger all in one
-kubectl apply -f jaeger.yaml
+# File Access Monitoring
+
+kubectl apply -f https://raw.githubusercontent.com/cilium/tetragon/main/examples/quickstart/file_monitoring.yaml
 
 # Deploy KEDA
 helm repo add kedacore https://kedacore.github.io/charts --force-update
-helm install keda kedacore/keda --namespace keda --version 2.10.2 --create-namespace
+helm install keda kedacore/keda --namespace keda --create-namespace
 
 # Deploy redis
 helm repo add bitnami https://charts.bitnami.com/bitnami --force-update
-helm install redis bitnami/redis --namespace demo --create-namespace --set architecture=standalone --set global.redis.password=testadmin
+helm install redis bitnami/redis --namespace demo --create-namespace --set architecture=standalone --set global.redis.password=lEoa6dGvGP
 
 # ArgoCD
 kubectl create namespace argocd
@@ -46,25 +49,46 @@ helm upgrade --install kubecost \
   --namespace kubecost --create-namespace
 
 # FluentBit
-cd helm/fluenbit
+cd helm/fluentbit
+helm repo add fluent https://fluent.github.io/helm-charts
+helm dependency build
+
 helm upgrade --install fluentbit -n fluentbit --create-namespace .
 cd ../..
 
-# Deploy Provider
+# deploy demoserviceprovider
+cd helm/demoserviceprovider
+helm upgrade provider . -n demo --create-namespace --install
 
-cd demoServiceProvider
-docker build -t demoserviceprovider .
-kind load docker-image demoserviceprovider --name=tech-demo
-cd ..
+cd ../..
 
-# Deploy Consumer
+# deploy demoserviceconsumer
+cd helm/demoserviceconsumer
+helm upgrade consumer . -n demo --create-namespace --install
 
-cd demoServiceConsumer
-docker build -t demoserviceconsumer .
-kind load docker-image demoserviceconsumer --name=tech-demo
-cd ..
+cd ../..
 
 # Telepresence
 
 telepresence helm install
 telepresence connect
+
+# # Install Metrics-Server (Linkerd)
+# helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
+# helm repo update
+# helm upgrade --install --set args={--kubelet-insecure-tls} metrics-server metrics-server/metrics-server --namespace kube-system
+
+# Install Cert-manager
+helm repo add jetstack https://charts.jetstack.io --force-update
+helm repo update
+
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.6.3/cert-manager.crds.yaml
+
+helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --version v1.6.3
+
+# Install Jaeger-Operator
+
+kubectl create -f https://github.com/jaegertracing/jaeger-operator/releases/download/v1.57.0/jaeger-operator.yaml -n observability
+
+# Deploy Jaeger all in one
+kubectl apply -f jaeger.yaml
