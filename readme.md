@@ -131,7 +131,9 @@ k logs pod/fluentbit-fluent-bit-fcw8v -n fluentbit --tail=5
 
 # eBPF
 
-## Hubble
+## Cilium
+
+### Hubble
 
 Hubble UI aufrufen
 
@@ -139,28 +141,46 @@ Hubble UI aufrufen
 cilium hubble ui
 ```
 
-### Example API-Calls
+#### Example API-Calls
 
 XWing
 
 ```
-kubectl exec xwing -- curl -s -XPOST deathstar.default.svc.cluster.local/v1/request-landing
+kubectl exec xwing -n default -- curl -s -XPOST deathstar.default.svc.cluster.local/v1/request-landing
 ```
 
 Tiefighter
 
 ```
-kubectl exec tiefighter -- curl -s -XPOST deathstar.default.svc.cluster.local/v1/request-landing
+kubectl exec tiefighter -n default -- curl -s -XPOST deathstar.default.svc.cluster.local/v1/request-landing
+```
+
+### L7 CiliumNetworkPolicy
+
+```
+k apply -f ebpf/networkPolicyL7.yaml
 ```
 
 ## Tetragon
 
-### Events
+### Monitoring
 
-#### Listening
+Enable File-Monitoring
 
 ```
-kubectl exec -ti -n kube-system pod/tetragon-z5hhk -c tetragon -- tetra getevents -o compact --pods xwin
+kubectl apply -f ebpf/tracingPolicyFileMonitoring.yaml
+```
+
+Enable Network-Monitoring
+
+```
+kubectl apply -f ebpf/tracingPolicyNetworkMonitoring.yaml
+```
+
+### Live-Monitoring
+
+```
+kubectl logs -n kube-system -l app.kubernetes.io/name=tetragon -c export-stdout -f | tetra getevents -o compact -n default
 ```
 
 #### Test
@@ -168,13 +188,27 @@ kubectl exec -ti -n kube-system pod/tetragon-z5hhk -c tetragon -- tetra getevent
 Curl
 
 ```
-kubectl exec -ti pod/xwing -- bash -c 'curl web.de'
+kubectl exec -ti pod/xwing -- bash -c 'curl https://ivfp.de'
 ```
 
 FileAccess
 
 ```
-kubectl exec -ti pod/xwing -- bash -c 'cat /etc/shadow && echo foo >> /etc/bar'
+kubectl exec -ti pod/xwing -- bash -c 'cat /etc/fstab >> /tmp/tetragon'
+```
+
+### TracingPolicies
+
+FileAccess
+
+```
+k apply -f ebpf/tracingPolicyFDInstall.yaml
+```
+
+Test
+
+```
+kubectl exec -ti pod/xwing -- bash -c 'cat /tmp/tetragon'
 ```
 
 ### Metrics
