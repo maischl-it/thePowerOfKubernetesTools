@@ -47,14 +47,6 @@ Remove all deployed resources
 kubeshark clean
 ```
 
-# Kubescape
-
-Scan
-
-```
-kubescape scan --enable-host-scan --verbose  --format html --output results.html
-```
-
 # Keda
 
 Metrics
@@ -67,6 +59,14 @@ ScaledObject abrufen
 
 ```
 k get scaledobject -n demo -o yaml | code -
+```
+
+# Kubescape
+
+Scan
+
+```
+kubescape scan --enable-host-scan --verbose  --format html --output results.html
 ```
 
 # Kubecost

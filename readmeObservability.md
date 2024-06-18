@@ -12,9 +12,7 @@ k port-forward -n demo svc/consumer-demoserviceconsumer 5000
 
 # eBPF
 
-## Cilium
-
-### Hubble
+## Cilium/Hubble
 
 Hubble UI aufrufen
 
@@ -22,7 +20,7 @@ Hubble UI aufrufen
 cilium hubble ui
 ```
 
-#### Example API-Calls
+### Example API-Calls
 
 XWing
 
@@ -36,15 +34,7 @@ Tiefighter
 kubectl exec tiefighter -n default -- curl -s -XPOST deathstar.default.svc.cluster.local/v1/request-landing
 ```
 
-### L7 CiliumNetworkPolicy
-
-```
-k apply -f ebpf/networkPolicyL7.yaml
-```
-
-## Tetragon
-
-### Monitoring
+## Enable Monitoring
 
 Enable File-Monitoring
 
@@ -58,13 +48,13 @@ Enable Network-Monitoring
 kubectl apply -f ebpf/tracingPolicyNetworkMonitoring.yaml
 ```
 
-### Live-Monitoring
+## Live-Monitoring
 
 ```
 kubectl logs -n kube-system -l app.kubernetes.io/name=tetragon -c export-stdout -f | tetra getevents -o compact -n default
 ```
 
-#### Test
+## Test
 
 Curl
 
@@ -78,9 +68,20 @@ FileAccess
 kubectl exec -ti pod/xwing -- bash -c 'cat /etc/fstab >> /tmp/tetragon'
 ```
 
-### TracingPolicies
+## L7 CiliumNetworkPolicy
 
-FileAccess
+```
+k apply -f ebpf/networkPolicyL7.yaml
+```
+
+Test
+
+```
+kubectl exec tiefighter -n default -- curl -s -XPOST deathstar.default.svc.cluster.local/v1/request-landing
+```
+
+
+## TracingPolicies (Tetragon)
 
 ```
 k apply -f ebpf/tracingPolicyFDInstall.yaml
