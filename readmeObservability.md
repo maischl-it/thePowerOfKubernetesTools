@@ -34,20 +34,6 @@ Tiefighter
 kubectl exec tiefighter -n default -- curl -s -XPOST deathstar.default.svc.cluster.local/v1/request-landing
 ```
 
-## Enable Monitoring
-
-Enable File-Monitoring
-
-```
-kubectl apply -f ebpf/tracingPolicyFileMonitoring.yaml
-```
-
-Enable Network-Monitoring
-
-```
-kubectl apply -f ebpf/tracingPolicyNetworkMonitoring.yaml
-```
-
 ## Live-Monitoring
 
 ```

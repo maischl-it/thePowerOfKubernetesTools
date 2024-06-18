@@ -21,7 +21,11 @@ helm install tetragon cilium/tetragon -n kube-system
 
 # File Access Monitoring
 
-kubectl apply -f https://raw.githubusercontent.com/cilium/tetragon/main/examples/quickstart/file_monitoring.yaml
+kubectl apply -f ebpf/tracingPolicyFileMonitoring.yaml
+
+# Network Access Monitoring
+
+kubectl apply -f ebpf/tracingPolicyNetworkMonitoring.yaml
 
 # Deploy KEDA
 helm repo add kedacore https://kedacore.github.io/charts --force-update
