@@ -1,0 +1,71 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+
+  filelog:
+    include:
+      - /var/log/pods/*/*/*.log
+    exclude:
+      # Exclude logs from all containers named *otel-*
+      - /var/log/pods/*/otc-container/*.log
+    start_at: end
+    include_file_path: true
+    include_file_name: false
+
+processors:
+  batch:
+    timeout: 10s
+
+  filter:
+    error_mode: ignore
+    traces:
+      span:
+        # Aurora monitoring itself
+        - 'name == "HTTP POST" and attributes["http.url"] == "https://localhost:5001/api/Values"'
+
+        # Redisson causes lots of noise, just filter it for now
+        - 'resource.attributes["service.name"] == "fairgleichen" and attributes["db.system"] == "redis"'
+
+  attributes:
+    actions:
+      # delete aurora request/response from log attributes
+      - key: IvfpRequest
+        action: delete
+      - key: IvfpResponse
+        action: delete
+      - key: VersichererRequest
+        action: delete
+      - key: VersichererResponse
+        action: delete
+
+exporters:
+  logging:
+
+  otlphttp/elastic:
+    endpoint: "{{ .Values.elastic.apm.endpoint }}"
+    headers:
+      Authorization: "Bearer {{ .Values.elastic.apm.token }}"
+
+service:
+  pipelines:
+    logs/filelog:
+      receivers: [filelog]
+      processors: [k8sattributes, batch]
+      exporters: [otlphttp/elastic, logging]
+
+    logs/otlp:
+      receivers: [otlp]
+      processors: [attributes, batch]
+      exporters: [otlphttp/elastic, logging]
+
+    traces:
+      receivers: [otlp]
+      processors: [tail_sampling, filter, batch]
+      exporters: [otlphttp/elastic, logging]
+
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlphttp/elastic, logging]

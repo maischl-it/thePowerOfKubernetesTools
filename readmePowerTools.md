@@ -1,25 +1,8 @@
-# Install
-
-```
-sh setupAKS.sh
-sh setup.sh
-```
-
-# Jaeger-UI
-
-```
-k port-forward svc/simplest-query 16686
-```
-
 # Call Consumer
 
 ```
 k port-forward -n demo svc/consumer-demoserviceconsumer 5000
 ```
-
-## Metrics
-
-http://localhost:5000/metrics
 
 # Telepresence
 
@@ -50,47 +33,6 @@ Run
 python3 app.py
 ```
 
-# Keda
-
-Metrics
-
-```
-k get secret/argocd-initial-admin-secret -n argocd -o yaml | code -
-```
-
-ScaledObject abrufen
-
-```
-k get scaledobject -n demo -o yaml | code -
-```
-
-# ArgoCD
-
-Extract Secret
-```
-k get secret/argocd-initial-admin-secret -n argocd -o yaml | code -
-```
-
-Port-Forward
-```
-kubectl port-forward svc/argocd-server -n argocd 8080:443
-```
-
-User:
-admin
-
-Passwort (generated):
-ybIs9JR-175MvcgC
-
-# Linkerd
-
-Dashboard
-```
-linkerd viz dashboard &
-```
-Passwort:
--ppVSgtoBKG-sgc-
-
 # Kubeshark
 
 Start network monitoring
@@ -105,14 +47,6 @@ Remove all deployed resources
 kubeshark clean
 ```
 
-# Kubecost
-
-UI
-
-```
-kubectl port-forward --namespace kubecost deployment/kubecost-cost-analyzer 9090
-```
-
 # Kubescape
 
 Scan
@@ -121,12 +55,26 @@ Scan
 kubescape scan --enable-host-scan --verbose  --format html --output results.html
 ```
 
-# FluentBit
+# Keda
 
-Read logs
+Metrics
 
 ```
-k logs pod/fluentbit-fluent-bit-fcw8v -n fluentbit --tail=5
+curl http://localhost:5000/metrics
+```
+
+ScaledObject abrufen
+
+```
+k get scaledobject -n demo -o yaml | code -
+```
+
+# Kubecost
+
+UI
+
+```
+kubectl port-forward --namespace kubecost deployment/kubecost-cost-analyzer 9090
 ```
 
 # eBPF
@@ -222,3 +170,40 @@ kubectl -n kube-system port-forward service/tetragon 2112:2112
 Metrics-URL
 
 http://localhost:2112/metrics
+
+
+# ArgoCD
+
+Extract Secret
+```
+k get secret/argocd-initial-admin-secret -n argocd -o yaml | code -
+```
+
+Port-Forward
+```
+kubectl port-forward svc/argocd-server -n argocd 8080:443
+```
+
+User:
+admin
+
+Passwort (generated):
+ybIs9JR-175MvcgC
+
+# Linkerd
+
+Dashboard
+```
+linkerd viz dashboard &
+```
+Passwort:
+-ppVSgtoBKG-sgc-
+
+
+# FluentBit
+
+Read logs
+
+```
+k logs pod/fluentbit-fluent-bit-fcw8v -n fluentbit --tail=5
+```
