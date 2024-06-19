@@ -50,11 +50,6 @@ exporters:
 
 service:
   pipelines:
-    logs/filelog:
-      receivers: [filelog]
-      processors: [k8sattributes, batch]
-      exporters: [otlphttp/elastic, logging]
-
     logs/otlp:
       receivers: [otlp]
       processors: [attributes, batch]
